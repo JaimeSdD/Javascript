@@ -31,16 +31,14 @@ sumOf(numbers1);
 
 // Con reduce
 function sumReduce (ar){
-  let sum3 = ar.reduce((sumaTotal, element) => sumaTotal + element);
-  return console.log (sum3);
+  return console.log (ar.reduce((sumaTotal, element) => sumaTotal + element));
 }
 
 sumReduce(numbers);
 sumReduce(numbers1);
 
 // Con flecha
-let sum4 = 0
-let sumArrow = a => console.log(sum4 = a.reduce((sumaTotal, element) => sumaTotal + element));
+let sumArrow = a => console.log(a.reduce((sumaTotal, element) => sumaTotal + element));
 
 sumArrow(numbers);
 sumArrow(numbers1);
