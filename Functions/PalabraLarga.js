@@ -10,7 +10,7 @@ for(i = 0; i < arr.length; i++){
         word = arr[i]
     } 
 }
-return ['The longest word is', word, 'with', word.length, 'letters.'].join(' ');
+return console.log(['The longest word is', word, 'with', word.length, 'letters.'].join(' '));
 }
 
-console.log(findLongestWord(avengers));
+findLongestWord(avengers);
