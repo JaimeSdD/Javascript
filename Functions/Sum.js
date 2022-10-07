@@ -40,5 +40,4 @@ sumReduce(numbers1);
 // Con flecha
 let sumArrow = a => console.log(a.reduce((sumaTotal, element) => sumaTotal + element));
 
-sumArrow(numbers);
-sumArrow(numbers1);
+sumArrow(numbers, numbers1);
