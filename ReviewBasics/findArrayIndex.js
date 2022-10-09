@@ -10,6 +10,7 @@ function findArrayIndex(array, text) {
     for (let i = 0; i < array.length; i++){
         if (text === array[i]){
             return (text + " is in the position " + i );
+            // return [text, "is in the position", i ].join(" ");
     }
 }
 }
