@@ -95,7 +95,7 @@ function createPokemonBack(pokemon) {
   cardContainer.style.backgroundColor = color;
   const gif = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${pokemon.id}.gif`;
 
-  const statsCreator = (pokemon) => {
+  const statsCreator = (stats) => {
     let result = "";
     const short = {
       "special-attack": "Sp.Atk",
@@ -105,13 +105,9 @@ function createPokemonBack(pokemon) {
       attack: "Atk",
       speed: "Speed",
     };
-    const stats = pokemon["stats"];
-    const types = pokemon["types"];
-    const mix = [...stats, ...types];
-    console.log(mix);
 
     stats.forEach(({ stat, base_stat }) => {
-      result += `<p>${short[stat.name]}:</p><p>${base_stat}</p>`;
+      result += `<p style = "color: ${color}">${short[stat.name]}:</p><p>${base_stat}</p>`;
     });
     return result;
   };
@@ -125,7 +121,7 @@ function createPokemonBack(pokemon) {
   <img src = ${gif}>
   </div>
   <div class = "stats"> 
-    ${statsCreator(pokemon)}
+    ${statsCreator(pokemon.stats)}
   </div>
   `;
 
