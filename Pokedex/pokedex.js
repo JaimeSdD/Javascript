@@ -22,14 +22,13 @@ const colors = {
 const search$$ = document.querySelector(".search");
 
 const searcher = (allPokemon) => {
-
   container$$.innerHTML = "";
 
   for (const pokemon of allPokemon) {
     const searchName = pokemon.name.includes(search$$.value.toLowerCase());
     const searchId = pokemon.id === parseInt(search$$.value);
-    const searchTypes = pokemon.types.some(
-      ({ type }) => type.name.includes(search$$.value.toLowerCase())
+    const searchTypes = pokemon.types.some(({ type }) =>
+      type.name.includes(search$$.value.toLowerCase())
     );
 
     if (searchName || searchId || searchTypes) {
@@ -41,13 +40,20 @@ const searcher = (allPokemon) => {
 function createPokemonCard(pokemon) {
   const cardContainer = document.createElement("div");
   cardContainer.classList.add("card-container");
+  cardContainer.id = pokemon.id;
+
+  container$$.appendChild(cardContainer);
+  createPokemonFront(pokemon);
+}
+
+function createPokemonFront(pokemon) {
+  const cardContainer = document.getElementById(pokemon.id);
 
   const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
-
   const type = pokemon.types[0].type.name;
   const color = colors[type];
   cardContainer.style.backgroundColor = color;
-  const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`
+  const image = pokemon.sprites.other["official-artwork"].front_default;
 
   const h3Creator = (types) => {
     let result = "";
@@ -71,7 +77,58 @@ function createPokemonCard(pokemon) {
   `;
 
   cardContainer.innerHTML = cardInnerHtml;
-  container$$.appendChild(cardContainer);
+  cardContainer.addEventListener("click", () => createPokemonBack(pokemon), {
+    once: true,
+  });
+}
+
+function createPokemonBack(pokemon) {
+  const cardContainer = document.getElementById(pokemon.id);
+
+  const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
+  const type = pokemon.types[0].type.name;
+  const color = colors[type];
+  cardContainer.style.backgroundColor = color;
+  const gif = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${pokemon.id}.gif`;
+
+  const statsCreator = (pokemon) => {
+    let result = "";
+    const short = {
+      "special-attack": "Sp.Atk",
+      "special-defense": "Sp.Def",
+      hp: "Hp",
+      defense: "Def",
+      attack: "Atk",
+      speed: "Speed",
+    };
+    const stats = pokemon["stats"];
+    const types = pokemon["types"];
+    const mix = [...stats, ...types];
+    console.log(mix);
+    
+    stats.forEach(({stat, base_stat} ) => {
+      result += `<p>${short[stat.name]}:</p><p>${base_stat}</p>`;
+    });
+    return result;
+  }
+
+  const cardInnerHtml = `
+  <div class = "title">
+  <span class = "number">#${pokemon.id}</span>
+  <h2 class = "name"> ${nameFirstUpper}</h2>
+  </div>
+  <div class = "img-container-back">
+  <img src = ${gif}>
+  </div>
+  <div class = "stats"> 
+    ${statsCreator(pokemon)}
+  </div>
+  `;
+
+  cardContainer.innerHTML = cardInnerHtml;
+  cardContainer.addEventListener("click", () => createPokemonFront(pokemon), {
+    once: true,
+  });
 }
 
 const getPokemon = async () => {
@@ -85,7 +142,6 @@ const getPokemon = async () => {
       return pokemon;
     })
   );
-
   search$$.addEventListener("input", () => searcher(allPokemon));
 };
 

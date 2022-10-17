@@ -34,7 +34,7 @@ h1 {
 .card-container{
   display:flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   width: 160px;
   border-radius: 25px;
@@ -42,6 +42,7 @@ h1 {
   text-align: center;
   margin: 10px;
   box-shadow: -2px 6px 13px 1px #000000;
+  min-height: 345px;
 }
 
 .card-container .img-container{
@@ -56,7 +57,7 @@ img{
 
 .info{
   margin-top: 20px;
-  width:100%;
+  width:190px;
 }
 
 .number {
@@ -70,7 +71,6 @@ img{
 }
 
 .name {
-  margin: 15px 0.7px;
   letter-spacing: 1px;
 }
 
@@ -84,4 +84,41 @@ h3{
   padding:5px 10px;
   border-radius: 10px;
   border: 1px solid black;
+}
+
+.card-container .img-container-back{
+  width: 185px;
+  height: 172px;
+  display:grid;
+  justify-items: center;
+  align-items: center;
+  background-color: azure;
+
+}
+
+.card-container .img-container-back img{
+  zoom:2;
+  width:auto;
+}
+
+.stats{
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 8px 21px;
+  margin-top: 20px;
+  padding: 5px;
+  background-color: azure;
+}
+
+.stats p{
+  margin:0;
+  text-align: start;
+  font-weight:bold;
+  font-size:12px;
+}
+
+ul {
+  list-style-type: none;
+  column-count: 2;
 }
