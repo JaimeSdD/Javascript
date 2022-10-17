@@ -48,6 +48,7 @@ function createPokemonCard(pokemon) {
 
 function createPokemonFront(pokemon) {
   const cardContainer = document.getElementById(pokemon.id);
+  
 
   const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
   const type = pokemon.types[0].type.name;
@@ -58,7 +59,9 @@ function createPokemonFront(pokemon) {
   const h3Creator = (types) => {
     let result = "";
     types.forEach(({ type }) => {
-      result += `<h3 style = "color:${colors[type.name]}" > ${type.name} </h3>`;
+      result += `<h3 style = "color:${colors[type.name]}" > ${
+        type.name[0].toUpperCase() + type.name.slice(1)
+      } </h3>`;
     });
     return result;
   };
@@ -77,6 +80,7 @@ function createPokemonFront(pokemon) {
   `;
 
   cardContainer.innerHTML = cardInnerHtml;
+  
   cardContainer.addEventListener("click", () => createPokemonBack(pokemon), {
     once: true,
   });
@@ -105,12 +109,12 @@ function createPokemonBack(pokemon) {
     const types = pokemon["types"];
     const mix = [...stats, ...types];
     console.log(mix);
-    
-    stats.forEach(({stat, base_stat} ) => {
+
+    stats.forEach(({ stat, base_stat }) => {
       result += `<p>${short[stat.name]}:</p><p>${base_stat}</p>`;
     });
     return result;
-  }
+  };
 
   const cardInnerHtml = `
   <div class = "title">
@@ -130,7 +134,6 @@ function createPokemonBack(pokemon) {
     once: true,
   });
 }
-
 const getPokemon = async () => {
   const petition = await fetch("https://pokeapi.co/api/v2/pokemon/?limit=151");
   const data = await petition.json();
@@ -138,11 +141,13 @@ const getPokemon = async () => {
     data.results.map(async ({ url }) => {
       const response = await fetch(url);
       const pokemon = await response.json();
-      createPokemonCard(pokemon);
       return pokemon;
     })
   );
+  allPokemon.forEach(pokemon => createPokemonCard(pokemon));
   search$$.addEventListener("input", () => searcher(allPokemon));
 };
 
 getPokemon();
+
+
