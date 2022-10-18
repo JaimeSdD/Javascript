@@ -1,4 +1,11 @@
 const container$$ = document.querySelector(".container");
+const search$$ = document.querySelector(".search");
+const All$$ = document.querySelector(".all");
+const Kanto$$ = document.querySelector(".kanto");
+const Johto$$ = document.querySelector(".johto");
+const Hoenn$$ = document.querySelector(".hoenn");
+const Flip$$ = document.querySelector(".flip");
+
 const colors = {
   normal: "#A8A77A",
   fire: "#EE8130",
@@ -19,7 +26,66 @@ const colors = {
   steel: "#B7B7CE",
   fairy: "#D685AD",
 };
-const search$$ = document.querySelector(".search");
+
+const getPokemonKanto = async () => {
+  const petition = await fetch("https://pokeapi.co/api/v2/pokemon/?limit=151");
+  const data = await petition.json();
+  const allPokemon = await Promise.all(
+    data.results.map(async ({ url }) => {
+      const response = await fetch(url);
+      const pokemon = await response.json();
+      return pokemon;
+    })
+  );
+  allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
+  search$$.addEventListener("input", () => searcher(allPokemon));
+  return allPokemon;
+};
+
+const getPokemonJohto = async () => {
+  const request = await fetch(
+    "https://pokeapi.co/api/v2/pokemon/?limit=100&offset=151"
+  );
+  const data = await request.json();
+  const allPokemon = await Promise.all(
+    data.results.map(async ({ url }) => {
+      const response = await fetch(url);
+      const pokemon = await response.json();
+      return pokemon;
+    })
+  );
+  allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
+  search$$.addEventListener("input", () => searcher(allPokemon));
+  return allPokemon;
+};
+
+const getPokemonHoenn = async () => {
+  const request = await fetch(
+    "https://pokeapi.co/api/v2/pokemon/?limit=135&offset=251"
+  );
+  const data = await request.json();
+  const allPokemon = await Promise.all(
+    data.results.map(async ({ url }) => {
+      const response = await fetch(url);
+      const pokemon = await response.json();
+      return pokemon;
+    })
+  );
+  allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
+  search$$.addEventListener("input", () => searcher(allPokemon));
+  return allPokemon;
+};
+
+const getAllPokemon = async () => {
+  const Kanto = await getPokemonKanto();
+  const Johto = await getPokemonJohto();
+  const Hoenn = await getPokemonHoenn();
+  allPokemon = [...Kanto, ...Johto, ...Hoenn];
+
+  search$$.addEventListener("input", () => searcher(allPokemon));
+};
+
+getAllPokemon();
 
 const searcher = (allPokemon) => {
   container$$.innerHTML = "";
@@ -35,25 +101,35 @@ const searcher = (allPokemon) => {
       createPokemonCard(pokemon);
     }
   }
+  if (container$$.innerHTML === "")
+    container$$.innerHTML = `
+  <div class = "error-container">
+  <img class ="error-img" src = "https://www.pngall.com/wp-content/uploads/4/Pokemon-Pokeball-PNG-Image-HD.png">
+  <h3 class = "error-text">Ouh! It seems that you haven't catch any pokemon. Try again! <br> (Your search doesn't match any pokemon)
+  </h3>
+  </div>
+  `;
 };
 
-function createPokemonCard(pokemon) {
+function createPokemonCard(pokemon, isFront = true) {
   const cardContainer = document.createElement("div");
   cardContainer.classList.add("card-container");
   cardContainer.id = pokemon.id;
 
   container$$.appendChild(cardContainer);
-  createPokemonFront(pokemon);
+  isFront ? createPokemonFront(pokemon) : createPokemonBack(pokemon);
 }
 
 function createPokemonFront(pokemon) {
   const cardContainer = document.getElementById(pokemon.id);
-  
 
   const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
   const type = pokemon.types[0].type.name;
   const color = colors[type];
   cardContainer.style.backgroundColor = color;
+  cardContainer.style.padding = "20px";
+  cardContainer.style.width = "160px";
+  cardContainer.style.minHeight = "345px";
   const image = pokemon.sprites.other["official-artwork"].front_default;
 
   const h3Creator = (types) => {
@@ -80,20 +156,35 @@ function createPokemonFront(pokemon) {
   `;
 
   cardContainer.innerHTML = cardInnerHtml;
-  
+
   cardContainer.addEventListener("click", () => createPokemonBack(pokemon), {
     once: true,
   });
 }
 
-function createPokemonBack(pokemon) {
+async function createPokemonBack(pokemon) {
   const cardContainer = document.getElementById(pokemon.id);
 
   const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
   const type = pokemon.types[0].type.name;
   const color = colors[type];
-  cardContainer.style.backgroundColor = color;
+  cardContainer.style.backgroundColor = "azure";
+  cardContainer.style.padding = "0";
+  cardContainer.style.width = "200px";
+  cardContainer.style.minHeight = "385.65px";
   const gif = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/${pokemon.id}.gif`;
+
+  const getSpecies = async ({ url }) => {
+    const request = await fetch(url);
+    const species = await request.json();
+    const description = species.flavor_text_entries[2].flavor_text.replace(
+      "\f",
+      " "
+    );
+    return description;
+  };
+
+  const description = await getSpecies(pokemon.species);
 
   const statsCreator = (stats) => {
     let result = "";
@@ -107,43 +198,52 @@ function createPokemonBack(pokemon) {
     };
 
     stats.forEach(({ stat, base_stat }) => {
-      result += `<p style = "color: ${color}">${short[stat.name]}:</p><p>${base_stat}</p>`;
+      result += `<p>${short[stat.name]}:</p><p>${base_stat}</p>`;
     });
     return result;
   };
 
   const cardInnerHtml = `
-  <div class = "title">
-  <span class = "number">#${pokemon.id}</span>
-  <h2 class = "name"> ${nameFirstUpper}</h2>
-  </div>
   <div class = "img-container-back">
   <img src = ${gif}>
+  </div>
+  <div style = "background-color: ${color}" class = "color-container">
+  <div class = "description" >
+    <p>${description}</p>
   </div>
   <div class = "stats"> 
     ${statsCreator(pokemon.stats)}
   </div>
+  </div>
   `;
 
   cardContainer.innerHTML = cardInnerHtml;
+
   cardContainer.addEventListener("click", () => createPokemonFront(pokemon), {
     once: true,
   });
 }
-const getPokemon = async () => {
-  const petition = await fetch("https://pokeapi.co/api/v2/pokemon/?limit=151");
-  const data = await petition.json();
-  const allPokemon = await Promise.all(
-    data.results.map(async ({ url }) => {
-      const response = await fetch(url);
-      const pokemon = await response.json();
-      return pokemon;
-    })
-  );
-  allPokemon.forEach(pokemon => createPokemonCard(pokemon));
-  search$$.addEventListener("input", () => searcher(allPokemon));
-};
 
-getPokemon();
+const whitePaper = () => ((container$$.innerHTML = ""), (search$$.value = ""));
 
+let isBack = false;
+const flipping = () => {
+  whitePaper();
+  if(isBack) {
+    allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
+    isBack = false;
+  } else {
+      allPokemon.forEach((pokemon) =>createPokemonCard(pokemon, false));
+      isBack = true;
+    }
+  }
 
+All$$.addEventListener("click", whitePaper);
+All$$.addEventListener("click", getAllPokemon);
+Kanto$$.addEventListener("click", whitePaper);
+Kanto$$.addEventListener("click", getPokemonKanto);
+Johto$$.addEventListener("click", whitePaper);
+Johto$$.addEventListener("click", getPokemonJohto);
+Hoenn$$.addEventListener("click", whitePaper);
+Hoenn$$.addEventListener("click", getPokemonHoenn);
+Flip$$.addEventListener("click", flipping);
