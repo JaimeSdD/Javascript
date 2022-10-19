@@ -39,6 +39,7 @@ const getPokemonKanto = async () => {
   );
   allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
   search$$.addEventListener("input", () => searcher(allPokemon));
+  Flip$$.addEventListener("click", () => flipping(allPokemon));
   return allPokemon;
 };
 
@@ -56,6 +57,7 @@ const getPokemonJohto = async () => {
   );
   allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
   search$$.addEventListener("input", () => searcher(allPokemon));
+  Flip$$.addEventListener("click", () => flipping(allPokemon));
   return allPokemon;
 };
 
@@ -73,6 +75,7 @@ const getPokemonHoenn = async () => {
   );
   allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
   search$$.addEventListener("input", () => searcher(allPokemon));
+  Flip$$.addEventListener("click", () => flipping(allPokemon));
   return allPokemon;
 };
 
@@ -80,9 +83,10 @@ const getAllPokemon = async () => {
   const Kanto = await getPokemonKanto();
   const Johto = await getPokemonJohto();
   const Hoenn = await getPokemonHoenn();
-  allPokemon = [...Kanto, ...Johto, ...Hoenn];
+  let allPokemon = [...Kanto, ...Johto, ...Hoenn];
 
   search$$.addEventListener("input", () => searcher(allPokemon));
+  Flip$$.addEventListener("click", () => flipping(allPokemon));
 };
 
 getAllPokemon();
@@ -165,7 +169,6 @@ function createPokemonFront(pokemon) {
 async function createPokemonBack(pokemon) {
   const cardContainer = document.getElementById(pokemon.id);
 
-  const nameFirstUpper = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);
   const type = pokemon.types[0].type.name;
   const color = colors[type];
   cardContainer.style.backgroundColor = "azure";
@@ -227,7 +230,7 @@ async function createPokemonBack(pokemon) {
 const whitePaper = () => ((container$$.innerHTML = ""), (search$$.value = ""));
 
 let isBack = false;
-const flipping = () => {
+const flipping = (allPokemon) => {
   whitePaper();
   if(isBack) {
     allPokemon.forEach((pokemon) => createPokemonCard(pokemon));
@@ -246,4 +249,3 @@ Johto$$.addEventListener("click", whitePaper);
 Johto$$.addEventListener("click", getPokemonJohto);
 Hoenn$$.addEventListener("click", whitePaper);
 Hoenn$$.addEventListener("click", getPokemonHoenn);
-Flip$$.addEventListener("click", flipping);
