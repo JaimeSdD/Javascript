@@ -11,7 +11,6 @@ let allFilteredPokemon = [];
 let pokemonRegion = {};
 let isBack = false;
 
-
 const colors = {
   normal: "#A8A77A",
   fire: "#EE8130",
@@ -250,7 +249,7 @@ const easterEgg = () => {
   document.body.innerHTML = "";
   const timer$$ = document.createElement("h5");
   timer$$.classList.add("clock");
-  timer$$.innerText = timer/1000; 
+  timer$$.innerText = timer / 1000;
   document.body.appendChild(timer$$);
   document.body.appendChild(board$$);
 
@@ -268,12 +267,17 @@ const easterEgg = () => {
     cardContainer = memoryCard(pokemon);
     cardContainer.addEventListener("click", () => memoryFlip(pokemon));
   });
-  setTimeout(() => {
+  const illidan = setTimeout(() => {
     document.body.innerHTML = `<img src ="https://i.ytimg.com/vi/cedAVx7sRB8/hqdefault.jpg">`;
   }, timer + 1000);
   const clock = setInterval(() => {
-    timer === 0 || score === 10 ? clearInterval(clock) : timer = timer - 1000;
-    timer$$.innerText = timer/1000;
+    if (timer === 0 || score === 10) {
+      clearInterval(clock);
+      clearTimeout(illidan);
+    } else {
+      timer = timer - 1000;
+    }
+    timer$$.innerText = timer / 1000;
   }, 1000);
 };
 
@@ -317,7 +321,7 @@ function memoryCard(pokemon, isFront = true) {
   const cardContainer = document.createElement("div");
   cardContainer.classList.add("memory-card-container");
   cardContainer.id = pokemon.id;
-  
+
   board$$.appendChild(cardContainer);
   isFront ? memoryFront(pokemon) : memoryBack(pokemon);
   return cardContainer;
@@ -356,4 +360,4 @@ function memoryBack(pokemon) {
   cardContainer.innerHTML = cardInnerHtml;
 }
 
-main()
+main();
