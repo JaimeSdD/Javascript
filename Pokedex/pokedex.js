@@ -286,6 +286,8 @@ const checker = (pokemon1, pokemon2) => {
   if (pokemon1.name === pokemon2.name) {
     setTimeout(() => {
       score++;
+      pokemon1.name = "correct";
+      pokemon2.name = "correct";
       if (score === 10) {
         document.body.innerHTML = `<img src = "https://media.tenor.com/2-AEeBY5wgwAAAAC/chuck-norris-thumbs-up.gif">`;
       }
@@ -305,7 +307,7 @@ const checker = (pokemon1, pokemon2) => {
 };
 
 const memoryFlip = (pokemon) => {
-  if (pokemon.id !== pokemon1?.id && !semaphore) {
+  if (pokemon.name !== "correct" && pokemon.id !== pokemon1?.id && !semaphore) {
     memoryBack(pokemon);
     clicks++;
     if (clicks === 1) {
