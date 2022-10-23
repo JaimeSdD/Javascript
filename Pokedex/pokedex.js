@@ -243,7 +243,7 @@ let pokemon1;
 let pokemon2;
 let score = 0;
 let semaphore = false;
-let timer = 40000;
+let timer = 35000;
 
 const easterEgg = () => {
   document.body.innerHTML = "";
@@ -362,4 +362,4 @@ function memoryBack(pokemon) {
   cardContainer.innerHTML = cardInnerHtml;
 }
 
-main()
+main().then(() => easterEgg());
