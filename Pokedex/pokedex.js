@@ -362,4 +362,4 @@ function memoryBack(pokemon) {
   cardContainer.innerHTML = cardInnerHtml;
 }
 
-main().then(() => easterEgg());
+main();
