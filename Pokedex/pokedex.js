@@ -243,7 +243,7 @@ let pokemon1;
 let pokemon2;
 let score = 0;
 let semaphore = false;
-let timer = 35000;
+let timer = 30000;
 
 const easterEgg = () => {
   document.body.innerHTML = "";
@@ -267,18 +267,18 @@ const easterEgg = () => {
     cardContainer = memoryCard(pokemon);
     cardContainer.addEventListener("click", () => memoryFlip(pokemon));
   });
+  const clock = setInterval(() => {
+    if (score === 10) {
+      clearInterval(clock);
+      clearTimeout(illidan);
+    } else if (timer === 0){
+      clearInterval(clock);
+    } else {timer = timer - 1000}
+    timer$$.innerText = timer / 1000;
+  }, 1000);
   const illidan = setTimeout(() => {
     document.body.innerHTML = `<img src ="https://i.ytimg.com/vi/cedAVx7sRB8/hqdefault.jpg">`;
   }, timer + 1000);
-  const clock = setInterval(() => {
-    if (timer === 0 || score === 10) {
-      clearInterval(clock);
-      clearTimeout(illidan);
-    } else {
-      timer = timer - 1000;
-    }
-    timer$$.innerText = timer / 1000;
-  }, 1000);
 };
 
 const checker = (pokemon1, pokemon2) => {
@@ -292,30 +292,28 @@ const checker = (pokemon1, pokemon2) => {
         document.body.innerHTML = `<img src = "https://media.tenor.com/2-AEeBY5wgwAAAAC/chuck-norris-thumbs-up.gif">`;
       }
       semaphore = false;
-    }, 700);
+    }, 500);
   } else {
     setTimeout(() => {
       memoryFront(pokemon1);
       memoryFront(pokemon2);
-      pokemon1 = undefined;
-      pokemon2 = undefined;
       semaphore = false;
-    }, 700);
+    }, 500);
   }
 
   clicks = 0;
 };
 
 const memoryFlip = (pokemon) => {
-  if (pokemon.name !== "correct" && pokemon.id !== pokemon1?.id && !semaphore) {
+  if (pokemon.name !== "correct" && !semaphore) {
     memoryBack(pokemon);
     clicks++;
     if (clicks === 1) {
       pokemon1 = pokemon;
-    } else if (clicks === 2) {
+    } else if (pokemon.id !== pokemon1?.id && clicks === 2 ) {
       pokemon2 = pokemon;
       checker(pokemon1, pokemon2);
-    }
+    } else {clicks = 1}
   }
 };
 
@@ -362,4 +360,4 @@ function memoryBack(pokemon) {
   cardContainer.innerHTML = cardInnerHtml;
 }
 
-main();
+main().then(() => easterEgg());
